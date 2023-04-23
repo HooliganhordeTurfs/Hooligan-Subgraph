@@ -1,0 +1,151 @@
+type Hooligan @entity {
+  id: ID!
+  decimals: BigInt!
+  totalSupply: BigDecimal!
+  totalSupplyUSD: BigDecimal!
+  totalVolume: BigDecimal!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigDecimal!
+  totalLiquidityUSD: BigDecimal!
+  averagePrice: BigDecimal!
+  price: BigDecimal!
+  pools: [Pool!]! @derivedFrom(field: "hooligan") # The pools containing the Hooligan token 
+  supplies: [Supply!]! @derivedFrom(field: "hooligan")
+  hooliganDayData: [HooliganDayData!]! @derivedFrom(field: "hooligan")
+  hooliganHourData: [HooliganHourData!]! @derivedFrom(field: "hooligan")
+}
+
+type Pool @entity {
+  id: ID! # The address of the pool.
+  hooligan: Hooligan!
+  liquidity: BigDecimal! # Value of liquidity in tokens.
+  liquidityUSD: BigDecimal! # Value of liquidity in USD.
+  volumeHooligan: BigDecimal! # Volume in the pool in Hooligan.
+  volumeUSD: BigDecimal! # Volume in the pool in USD.
+  utilisation: BigDecimal! # The liquidity utilization.
+  delta: BigDecimal! # The # of Hooligans above/below peg.
+  txn: [Transaction!]! @derivedFrom(field: "pool")
+  pairs: [Pair!]! @derivedFrom(field: "pool")
+  prices: [Price!]! @derivedFrom(field: "pool")
+  pooldayData: [PoolDayData!]! @derivedFrom(field: "pool")
+  poolhourData: [PoolHourData!]! @derivedFrom(field: "pool")
+}
+
+type Supply @entity {
+  id: ID!
+  hooligan: Hooligan!
+  timestamp: BigInt!
+  totalSupply: BigDecimal!
+  totalSupplyUSD: BigDecimal!
+}
+
+type Price @entity {
+  id: ID!
+  pool: Pool!
+  timestamp: BigInt!
+  price: BigDecimal!
+  invariant: BigDecimal! # invariant of curve pool to calculate 3CRV prices.
+  tokensupply: BigDecimal! # LP of curve pool to calculate 3CRV prices.
+  amount1: BigDecimal! # 3CRV token amount exchanged againt Hooligan to calculate price.
+  lastCross: BigInt!
+  totalCrosses: Int!
+  totalTimeSinceCross: BigInt!
+  startTime: Int!
+  crosses: [Cross!]! @derivedFrom(field: "price")
+}
+
+type Transaction @entity {
+  id: ID!
+  pool: Pool!
+}
+
+type HooliganHourData @entity {
+  id: ID!
+  hooligan: Hooligan!
+  price: BigDecimal!
+  hourTimestamp: Int!
+  totalSupply: BigDecimal!
+  totalSupplyUSD: BigDecimal!
+  totalVolume: BigDecimal!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigDecimal!
+  totalLiquidityUSD: BigDecimal!
+  averagePrice: BigDecimal!
+}
+
+type HooliganDayData @entity {
+  id: ID!
+  hooligan: Hooligan!
+  price: BigDecimal!
+  dayTimestamp: Int!
+  totalSupply: BigDecimal!
+  totalSupplyUSD: BigDecimal!
+  totalVolume: BigDecimal!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigDecimal!
+  totalLiquidityUSD: BigDecimal!
+  averagePrice: BigDecimal!
+}
+
+type PoolHourData @entity {
+  id: ID!
+  pool: Pool!
+  hourTimestamp: Int!
+  price: BigDecimal! # Price of Hooligan in USD in the pool.
+  reserve0: BigDecimal! # The reserves in the pool.
+  reserve1: BigDecimal! # The reserves in the pool.
+  liquidity: BigDecimal! # Value of liquidity in tokens.
+  liquidityUSD: BigDecimal! # Value of liquidity in USD.
+  volumeHooligan: BigDecimal! # Volume in the pool in Hooligan.
+  volumeUSD: BigDecimal! # Volume in the pool in USD.
+  utilisation: BigDecimal! # The liquidity utilization.
+  delta: BigDecimal! # The # of Hooligans above/below peg.
+  newCrosses: Int!
+  totalCrosses: Int!
+  totalTimeSinceCross: BigInt!
+  crosses: [Cross!]! @derivedFrom(field: "poolhourData")
+}
+
+type PoolDayData @entity {
+  id: ID!
+  pool: Pool!
+  dayTimestamp: Int!
+  price: BigDecimal! # Price of Hooligan in USD in the pool.
+  reserve0: BigDecimal! # The reserves in the pool.
+  reserve1: BigDecimal! # The reserves in the pool.
+  liquidity: BigDecimal! # Value of liquidity in tokens.
+  liquidityUSD: BigDecimal! # Value of liquidity in USD.
+  volumeHooligan: BigDecimal! # Volume in the pool in Hooligan.
+  volumeUSD: BigDecimal! # Volume in the pool in USD.
+  utilisation: BigDecimal! # The liquidity utilization.
+  delta: BigDecimal! # The # of Hooligans above/below peg.
+  newCrosses: Int!
+  totalCrosses: Int!
+  totalTimeSinceCross: BigInt!
+  crosses: [Cross!]! @derivedFrom(field: "pooldayData")
+}
+
+type Pair @entity {
+  id: ID!
+  pool: Pool!
+  decimals0: BigInt!
+  decimals1: BigInt!
+  tokens: [Token!]! @derivedFrom(field: "pair")
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+}
+
+type Token @entity {
+  id: ID!
+  pair: Pair!
+}
+
+type Cross @entity {
+  id: ID!
+  price: Price!
+  timestamp: Int!
+  timeSinceLastCross: Int!
+  above: Boolean!
+  poolhourData: PoolHourData!
+  pooldayData: PoolDayData!
+}

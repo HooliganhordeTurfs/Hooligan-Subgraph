@@ -1,0 +1,135 @@
+type Hooligan @entity {
+  id: ID!
+  decimals: BigInt!
+  totalSupply: BigInt!
+  marketCap: BigDecimal!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  #averagePrice: BigDecimal!
+  price: BigDecimal!
+  totalCrosses: Int!
+  lastCross: BigInt!
+  #pools: [Pool!]! @derivedFrom(field: "hooligan") # The pools containing the Hooligan token 
+  #supplies: [Supply!]! @derivedFrom(field: "hooligan")
+  hourlySnapshot: [HooliganHourlySnapshot!]! @derivedFrom(field: "hooligan")
+  dailySnapshot: [HooliganDailySnapshot!]! @derivedFrom(field: "hooligan")
+}
+
+type HooliganHourlySnapshot @entity {
+  id: ID!
+  hooligan: Hooligan!
+  totalSupply: BigInt!
+  marketCap: BigDecimal!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  price: BigDecimal!
+  totalCrosses: Int!
+  deltaHooligans: BigInt!
+  hourlyVolume: BigInt!
+  hourlyVolumeUSD: BigDecimal!
+  hourlyLiquidity: BigInt!
+  hourlyLiquidityUSD: BigDecimal!
+  hourlyCrosses: Int!
+  crosses: [Cross!]! @derivedFrom(field: "hourlySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+type HooliganDailySnapshot @entity {
+  id: ID!
+  hooligan: Hooligan!
+  totalSupply: BigInt!
+  marketCap: BigDecimal!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  price: BigDecimal!
+  totalCrosses: Int!
+  deltaHooligans: BigInt!
+  dailyVolume: BigInt!
+  dailyVolumeUSD: BigDecimal!
+  dailyLiquidity: BigInt!
+  dailyLiquidityUSD: BigDecimal!
+  dailyCrosses: Int!
+  crosses: [Cross!]! @derivedFrom(field: "dailySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+type Cross @entity {
+  id: ID!
+  #pool: Pool!
+  price: BigDecimal!
+  timestamp: BigInt!
+  timeSinceLastCross: BigInt!
+  above: Boolean!
+  hourlySnapshot: HooliganHourlySnapshot!
+  dailySnapshot: HooliganDailySnapshot!
+  #poolHourlySnapshot: PoolHourlySnapshot!
+  #poolDailySnapshot: PoolDailySnapshot!
+}
+
+type Pool @entity {
+  id: ID!
+  hooligan: Hooligan!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  utilization: BigDecimal!
+  totalCrosses: Int!
+  #crosses: [Cross!]! @derivedFrom(field: "pool")
+  deltaHooligans: BigInt!
+  hourlySnapshot: [PoolHourlySnapshot!]! @derivedFrom(field: "pool")
+  dailySnapshot: [PoolDailySnapshot!]! @derivedFrom(field: "pool")
+}
+
+type PoolHourlySnapshot @entity {
+  id: ID!
+  pool: Pool!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  utilization: BigDecimal!
+  totalCrosses: Int!
+  deltaHooligans: BigInt!
+  hourlyVolume: BigInt!
+  hourlyVolumeUSD: BigDecimal!
+  hourlyLiquidity: BigInt!
+  hourlyLiquidityUSD: BigDecimal!
+  hourlyCrosses: Int!
+  #crosses: [Cross!]! @derivedFrom(field: "poolHourlySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
+
+
+type PoolDailySnapshot @entity {
+  id: ID!
+  pool: Pool!
+  totalVolume: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalLiquidity: BigInt!
+  totalLiquidityUSD: BigDecimal!
+  utilization: BigDecimal!
+  totalCrosses: Int!
+  deltaHooligans: BigInt!
+  dailyVolume: BigInt!
+  dailyVolumeUSD: BigDecimal!
+  dailyLiquidity: BigInt!
+  dailyLiquidityUSD: BigDecimal!
+  dailyCrosses: Int!
+  #crosses: [Cross!]! @derivedFrom(field: "poolDailySnapshot")
+  season: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}

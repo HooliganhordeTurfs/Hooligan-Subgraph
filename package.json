@@ -1,0 +1,18 @@
+{
+  "name": "Hooligan-Subgraph",
+  "license": "MIT License",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ hooligan",
+    "create-local": "graph create --node http://graph.playgrounds.academy:8020/ hooligan",
+    "remove-local": "graph remove --node http://graph.playgrounds.academy:8020/ hooligan",
+    "deploy-local": "graph deploy --node http://graph.playgrounds.academy:8020/ --ipfs http://graph.playgrounds.academy:5001 hooligan",
+    "deploy-hosted": "graph deploy --product hosted-service cujowolf/hooligan"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.30.4",
+    "@graphprotocol/graph-ts": "0.27.0",
+    "matchstick-as": "^0.5.0"
+  }
+}
